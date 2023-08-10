@@ -42,7 +42,7 @@ def train(p):
     d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, updater,p)
 
 if __name__ == '__main__':
-    xplt = plot.AnimatorPlot(frames=30, interval=1)
+    xplt = plot.AnimatorPlot(frames=10, interval=1)
     xplt.set_axes(xlabel='epoch', ylabel='rmse', legend=['train', 'valid'], xlim=(1, 10), ylim=(0, 5),
                   xscale='linear', yscale='linear')
     th = threading.Thread(target=train, args=(xplt,))
