@@ -4,9 +4,6 @@ from torch import nn
 from torch import optim
 from pre_learning.xhaoTools import d2l,plot
 import threading
-class ReShape(nn.Module):
-    def forward(self, x):
-        return x
 
 net = nn.Sequential(
     nn.Conv2d(1,96,kernel_size=11, stride=4, padding=1), nn.ReLU(),
