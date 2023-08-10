@@ -46,6 +46,5 @@ if __name__ == '__main__':
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     x = torch.randn(5, 3, device=device)
     net = nn.Sequential(MyLinear(5, 3))
-    net.to(device)
-
+    net = net.to(device)
     
