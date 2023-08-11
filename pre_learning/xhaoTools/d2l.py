@@ -128,6 +128,9 @@ def train_ch3(net, train_iter, test_iter, loss, num_epochs, updater, plot=None):
         print(f'-->train_loss:{train_metrics[0]}, train_acc:{train_metrics[1]}, test_acc:{test_acc_cur}')
     # train_loss, train_acc = train_metrics
 
+def train_batch_on_multi_device(net, train_iter, test_iter, loss, num_epochs, updater,device_params, plot=None):
+    pass
+
 def test():
     path = Path('pre_learning/data').resolve()
     print(path)
@@ -143,7 +146,7 @@ class Timer:
         """启动计时器。"""
         self.tik = time.time()
 
-    def stop(self):
+    def record(self):
         """停止计时器并将时间记录在列表中。"""
         self.times.append(time.time() - self.tik)
         return self.times[-1]
@@ -171,4 +174,4 @@ class Benchmark:
         return self
     
     def __exit__(self, *args):
-        print(f'{self.description}: {self.timer.stop():.4f} sec')
+        print(f'{self.description}: {self.timer.record():.8f} sec')

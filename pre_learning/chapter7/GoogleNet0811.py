@@ -73,9 +73,8 @@ def batch_normal(X, gamma, beta, moving_mean, moving_var, eps, momentum):
     return Y, moving_mean.data, moving_var.data
 
 if __name__ == '__main__':
-    # while True:
-    #     price = int(input("请输入价格：").strip())
-    #     count = price * 0.55
-    #     print(count)
-    from numba import jit
-    
+    # pass
+    while True:
+        price = int(input("请输入价格：").strip())
+        count = price * 0.55
+        print(count)
