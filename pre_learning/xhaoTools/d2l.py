@@ -171,4 +171,4 @@ class Benchmark:
         return self
     
     def __exit__(self, *args):
-        print(f'{self.description}: {self.timer.stop():.4f} sec')
+        print(f'{self.description}: {self.timer.stop():.8f} sec')
