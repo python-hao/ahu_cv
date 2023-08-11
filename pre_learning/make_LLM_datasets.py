@@ -1,39 +1,44 @@
-# coding: utf-8
-# Project：windows.py
-# Author：XHao
-# Date ：2023-8-4 15:17
-# Tool ：PyCharm
-
-import json
+#coding:UTF-8
 from pathlib import Path
-def gen_dialog(i):
-    """单论对话制作"""
+import json
+
+def gen_dialog(file_name, output_dir = None):
+    """单论对话制作，一轮对话保存在一个json文件"""
+    print(f"开启当前对话 {file_name}.json")
+    path = Path(output_dir).resolve()
+    # 替换下面的一行代码，防止文件重名
+    # f_num = len(list(path.glob(f'{file_name}.json')))
+    f_num = 0
+    path = path / f"{file_name}.json" if f_num == 0 else path / f"{file_name}_{f_num+1}.json"
+
     single_dialog = {
-        "prompt": "",
-        "response": "",
-        "history": []
+        "prompt":"",
+        "response":"",
+        "history":[]
     }
-    keep = 1
-    while keep == 1:
-        question = input("问题：").strip()
-        answer = input("回答：").strip()
-        single_dialog["history"].append(question)
-        single_dialog["history"].append(answer)
-        keep = int(input("结束对话(0-结束，非0-继续)：").strip())
-        if keep != 0:
-            keep = 1
-    end = single_dialog["history"].pop(-1)
-    single_dialog["prompt"] = end[0]
-    single_dialog["response"] = end[1]
-
     # 写入文件
-    path = Path(f"datasets/train").resolve()
-    path.mkdir(exist_ok=True, parents=True)
-    path = path / f"{i}.json"
-    with path.open("w", encoding="utf8") as file:
-        json.dump(single_dialog, file, ensure_ascii=False)
-    print(f"当前对话已保存至 {path}")
+    with path.open("a+", encoding="utf8") as file:
+        while True:
+            prompt = single_dialog["prompt"]
+            response = single_dialog["response"]
+            if prompt != "" and response !="":
+                single_dialog["history"].append([prompt, response])
+            single_dialog["prompt"] = input("问题：").strip()
+            single_dialog["response"] = input("回答：").strip()
+            if single_dialog["prompt"] != "" and single_dialog["response"] !="":
+                json.dump(single_dialog, file, ensure_ascii=False)
+            file.write('\n')
 
+            keep = int(input("操作：(0-结束程序， 1-继续当前对话，2-重置对话 )：").strip())
+            if keep == 2:
+                print(f"当前对话结束，开起新对话~~")
+                single_dialog["history"] = []
+            elif keep ==0:
+                file.close()
+                return
 
 if __name__ == '__main__':
-    gen_dialog(1)
+    # 写入文件
+    path = Path(f"datasets/train")
+    path.mkdir(exist_ok=True, parents=True)
+    gen_dialog("xhao", path)
