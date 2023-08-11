@@ -27,10 +27,50 @@ class Inception(nn.Moudle):
         p4 = F.relu(self.p4_2(self.p4_1(x)))
         return torch.cat((p1, p2, p3, p4), dim=1)
 
+class BatchNormal(nn.Module):
+    def __init__(self,num_features, num_dims, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        if num_dims == 2:
+            shape = (1, num_features)
+        else:
+            shape = (1, num_features, 1, 1)
+        self.gama = nn.Parameter(torch.ones(shape))
+        self.beta = nn.Parameter(torch.ones(shape))
+        self.moving_mean = torch.ones(shape)
+        self.moving_var = torch.ones(shape)
+    def forward(self, x):
+        if self.moving_mean.device != x.device:
+            self.moving_mean = self.moving_mean.to(x.device)
+            self.moving_var = self.moving_var.to(x.device)
+        y, self.moving_mean, self.moving_var = batch_normal(
+            x,self.gama, self.beta, self.moving_mean, self.moving_var, eps=1e-5, momentum=0.9
+        )
+        return y
+    
 
-def test_shape():
-    pass
+def batch_normal(X, gamma, beta, moving_mean, moving_var, eps, momentum):
+    # 通过is_grad_enabled来判断当前模式是训练模式还是预测模式
+    if not torch.is_grad_enabled():
+        # 如果是在预测模式下，直接使⽤传⼊的移动平均所得的均值和⽅差
+        X_hat = (X - moving_mean) / torch.sqrt(moving_var + eps)
+    else:
+        assert len(X.shape) in (2, 4)
+        if len(X.shape) == 2:
+            # 使⽤全连接层的情况，计算特征维上的均值和⽅差
+            mean = X.mean(dim=0)
+            var = ((X - mean) ** 2).mean(dim=0)
+        else:
+            # 使⽤⼆维卷积层的情况，计算通道维上（axis=1）的均值和⽅差。
+            # 这⾥我们需要保持X的形状以便后⾯可以做⼴播运算
+            mean = X.mean(dim=(0, 2, 3), keepdim=True)
+            var = ((X - mean) ** 2).mean(dim=(0, 2, 3), keepdim=True)
+        # 训练模式下，⽤当前的均值和⽅差做标准化
+        X_hat = (X - mean) / torch.sqrt(var + eps)
+        # 更新移动平均的均值和⽅差
+        moving_mean = momentum * moving_mean + (1.0 - momentum) * mean
+        moving_var = momentum * moving_var + (1.0 - momentum) * var
+    Y = gamma * X_hat + beta # 缩放和移位
+    return Y, moving_mean.data, moving_var.data
 
 if __name__ == '__main__':
-    test_shape()
-    # 参数大小 = kernal 的大小 （长*宽） * kernal的通道（输入的通道）* 输出的通道数
+    pass
