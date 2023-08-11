@@ -5,8 +5,8 @@ from torch import nn
 from torch.nn import functional as F
 import torch
 
-class Inception(nn.Moudle):
-    def __init__(self, inchannels, c1,c2,c3,c4,**kwargs):
+class Inception(nn.Module):
+    def __init__(self, in_channels, c1,c2,c3,c4,**kwargs):
         super(Inception, self).__init__(**kwargs)
         # 线路1，单1x1卷积层
         self.p1_1 = nn.Conv2d(in_channels, c1, kernel_size=1)
@@ -73,4 +73,7 @@ def batch_normal(X, gamma, beta, moving_mean, moving_var, eps, momentum):
     return Y, moving_mean.data, moving_var.data
 
 if __name__ == '__main__':
-    pass
+    while True:
+        price = int(input("请输入价格：").strip())
+        count = price * 0.55
+        print(count)
