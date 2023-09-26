@@ -5,5 +5,6 @@
 @Email    : 2510383889@qq.com
 '''
 # here put the import lib
+from pathlib import Path
 
-print("")
+path = Path('reid').resolve()
