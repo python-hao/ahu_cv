@@ -8,3 +8,4 @@
 from pathlib import Path
 
 path = Path('reid').resolve()
+print(path.cwd())
