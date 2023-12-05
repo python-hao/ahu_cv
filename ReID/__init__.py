@@ -1,8 +1,6 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 '''
-@Time     : 2023/09/22 16:10:00
-@Author   : XHao
-@Email    : 2510383889@qq.com
+@Time   : 2023/09/21 21:29:59
+@Author : XHao 
+@Tool   : VSCode
 '''
-# here put the import lib
-

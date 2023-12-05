@@ -1,5 +1,8 @@
-# coding: utf-8
-# Project：ahu_cv
-# Author：XHao
-# Date ：2023-7-23 02:13
-# Tool ：PyCharm
+# -*- coding: utf-8 -*-
+'''
+@File   : __init__.py
+@Time   : 2023/09/21 21:28:53
+@Author : XHao 
+@Tool   : VSCode
+'''
+
