@@ -117,11 +117,15 @@ if __name__ == "__main__":
     from pathlib import Path
 
     # 使用最新的面向对象路径函数Path，便于路径变换
+    # 当前文件目录
     root_customer = Path(__file__).resolve().parent
-    self_img_path = root_customer / 'xhao.png'
+    # 源图片目录
+    root_img = root_customer / "assets"
+    # 图片路径
+    self_img_path = root_img / 'xhao.png'
     add_img_path = [
-        root_customer / 'signature.png',
-        root_customer / 'subject.png',
+        root_img / 'signature.png',
+        root_img / 'subject.png',
     ]
     result_path = root_customer / 'DIP1_embed.png'
 
