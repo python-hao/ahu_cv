@@ -40,6 +40,11 @@ def _releaseCV(waitKey=0):
 
 @_releaseCV(waitKey=0)
 def embed(target_img_path, add_imgs_path, result_path):
+    """
+    target_img_path: 容纳图（即母图）地址，
+    target_img_path: 信息图（即嵌入的图）地址，
+    result_path: 结果保存地址
+    """
     # 检查嵌入图片的地址为列表形式
     if not isinstance(add_imgs_path, list):
         raise TypeError("add_imgs must be list like [path1, ]")
@@ -47,9 +52,10 @@ def embed(target_img_path, add_imgs_path, result_path):
     # 按单通道（灰度），8位图像（0~255）读入
     # 之后缩放图片尺寸为（w，h），默认以线性插值方式
     # 把 add_img 归一化
-    self_img_data = cv2.resize(cv2.imread(target_img_path, 0), (512, 512))
+    self_img_data = cv2.resize(cv2.imread(str(target_img_path), 0), (512, 512))
+    cv2.imwrite(str(target_img_path.parent / "512_512_8b.png"), self_img_data)
     h, w = self_img_data.shape
-    add_imgs_data = [cv2.resize(cv2.imread(_img, 0), (w, h))
+    add_imgs_data = [cv2.resize(cv2.imread(str(_img), 0), (w, h))
                      for _img in add_imgs_path]
 
     # 把add_img图像转为二值图
@@ -71,7 +77,7 @@ def embed(target_img_path, add_imgs_path, result_path):
     embedded_img = cv2.bitwise_or(embedded_img, add_imgs_data[1])
 
     # 保存图像
-    cv2.imwrite(result_path, embedded_img)
+    cv2.imwrite(str(result_path), embedded_img)
 
     # 显示图像
     cv2.imshow("self_img_data", self_img_data)
@@ -81,16 +87,20 @@ def embed(target_img_path, add_imgs_path, result_path):
 @_releaseCV(waitKey=0)
 def disEmbed(embedded_img_path, bit_pos: [int] = [-1], save_dir=None):
     """
-    bit_pos: 解码的位面，-1表示全解码
+    embedded_img_path: 带有嵌入信息的图片地址
+    bit_pos: 解码的位面，默认-1表示全解码
+    save_dir: 保存解码结果的目录名称，默认不保存
     """
-    img_result = cv2.imread(embedded_img_path)
+    img_result = cv2.imread(str(embedded_img_path))
     h, w, c = img_result.shape
+
     # x用于将二进制数转换为十进制
     x = np.zeros((h, w, c, 8), dtype=np.uint8)
     for i in range(8):
         x[:, :, :, i] = 2**i
     r = np.zeros((h, w, c, 8), dtype=np.uint8)
     cv2.imshow("wait to be disembedded", img_result)
+
     bit_pos = range(8) if bit_pos == -1 else bit_pos
     for i in bit_pos:
         assert i >= 0
@@ -98,25 +108,26 @@ def disEmbed(embedded_img_path, bit_pos: [int] = [-1], save_dir=None):
         mask = r[:, :, :, i] > 0
         r[mask] = 255
         if save_dir:
-            os.makedirs(save_dir, exist_ok=True)
-            cv2.imwrite(os.path.join(
-                save_dir, f"{i}.png"), r[:, :, :, i])
+            save_dir.mkdir(parents=True, exist_ok=True)
+            cv2.imwrite(str(save_dir / f"{i}.png"), r[:, :, :, i])
         cv2.imshow(f"{i}", r[:, :, :, i])
 
 
 if __name__ == "__main__":
     from pathlib import Path
 
+    # 使用最新的面向对象路径函数Path，便于路径变换
     root_customer = Path(__file__).resolve().parent
-    self_img_path = Path(root_customer / 'xhao.png').as_posix()
+    self_img_path = root_customer / 'xhao.png'
     add_img_path = [
-        Path(root_customer / 'signature.png').as_posix(),
-        Path(root_customer / 'subject.png').as_posix(),
+        root_customer / 'signature.png',
+        root_customer / 'subject.png',
     ]
-    result_path = Path(root_customer/'DIP1_embed.png').as_posix()
+    result_path = root_customer / 'DIP1_embed.png'
+
     # 编码
     embed(self_img_path, add_img_path, result_path)
 
     # 解 码
-    save_dir = Path(root_customer/'DIP1_disEmbed').as_posix()
+    save_dir = root_customer / 'DIP1_disEmbed'
     disEmbed(result_path, bit_pos=[0, 1], save_dir=save_dir)

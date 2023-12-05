@@ -5,13 +5,14 @@ import datetime
 
 # 1、利用import导入第三方库openpyxl
 from openpyxl import load_workbook
-
+from pathlib import Path
 
 # 2、打开文件
 # file_location='F:\\Project\\Python\\cvpr2020DataAnalysis\\data\\rui1.xlsx'
 # out_location='F:\\Project\\Python\\cvpr2020DataAnalysis\\data\\rui2.xlsx'
-read_location = r'C:\Users\25103\OneDrive\文档\安大研究生\cvpr组\考勤统计\CVPR2023级研究生23.11.27-12.03考勤统计_origin.xlsx'
-write_location = r'C:\Users\25103\OneDrive\文档\安大研究生\cvpr组\考勤统计\CVPR2023级研究生23.11.27-12.03考勤统计.xlsx'
+root = Path(r"C:\Users\25103\OneDrive\文档\安大研究生\cvpr组\考勤统计")
+read_location = root / 'CVPR2023级研究生23.11.27-12.03考勤统计_origin.xlsx'
+write_location = root / 'CVPR2023级研究生23.11.27-12.03考勤统计.xlsx'
 
 # 3、加载表格
 # excelRead=load_workbook(file_location)
