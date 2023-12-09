@@ -272,3 +272,8 @@ if __name__ == '__main__':
     # prop = {'sku_id': skuId, 'num': 1, 'item_id': taobaoItemsSkuObj.itemId}
     # bpUrl = GeneratePbUrl().generatePB([prop])
     # print("bp:", bpUrl)
+
+    # # 获取随机ua
+    # from faker import Faker
+    # uas = Faker()
+    # print(uas.user_agent())
